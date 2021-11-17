@@ -97,7 +97,7 @@ Matrix Matrix::transpose()
     return TMP;
 }
 
-Matrix Matrix:: fillSym()
+Matrix Matrix::fillSym()
 {
     for (int i = 0; i < rows_; i++) {
         for (int j = 0; j < i; j++) {
@@ -106,6 +106,67 @@ Matrix Matrix:: fillSym()
     }
     return *this;
 }
+
+
+Matrix Matrix::changeAllInRow(int i, double a)
+{
+    if (i > rows_){
+        cout << "!! Index out of bounds for changeAllInRow " << endl;
+        exit(-1); 
+    }
+    for (int j = 0; j < cols_; j++) {
+        val[i][j] = a;
+    }
+    return *this;
+}
+
+Matrix Matrix::changeAllInCol(int j, double a)
+{
+    if (j > cols_){
+        cout << "!! Index out of bounds for changeAllInCol " << endl;
+        exit(-1); 
+    }
+    for (int i = 0; i < rows_; i++) {
+        val[i][j] = a;
+    }
+    return *this;
+}
+
+Matrix Matrix::gaussianElim(){
+    for (int i = 0; i < rows_-1;i++){               //loop to perform the gauss elimination
+        for (int k=i+1; k < rows_; k++)
+            {
+                double t=val[k][i]/val[i][i];
+                for (int j = 0; j < cols_; j++)
+                    val[k][j]-=t*val[i][j];    //make the elements below the pivot elements equal to zero or elimnate the variables
+            }
+    }
+    return *this;
+}
+
+Matrix Matrix::gaussianSol(){
+    Matrix sol(rows_,1,1.);
+    //cout  << "sol initialisation" << sol << endl;
+
+    for (int i = rows_-1; i >= 0;i--)                //back-substitution
+    {                        //x is an array whose values correspond to the values of x,y,z..
+        // cout << sol.val[i][0] << endl;
+        sol.val[i][0]= val[i][cols_ -1];                //make the variable to be calculated equal to the rhs of the last equation
+        // cout << val[i][cols_ -1] << endl;
+        
+        for (int j = i+1; j < rows_;j++)
+            if (j!=i)            //then subtract all the lhs values except the coefficient of the variable whose value                                   is being calculated
+                sol.val[i][0]=sol.val[i][0]-(val[i][j])*(sol.val[j][0]);
+        sol.val[i][0]=(sol.val[i][0])/(val[i][i]);            //now finally divide the rhs by the coefficient of the variable to be calculated
+    }
+    return (sol);
+}
+
+double Matrix::getDet3()
+{
+    return (val[0][0])*((val[1][1])*(val[2][2])- (val[1][2])*(val[2][1])) - (val[0][1])*((val[1][0])*(val[2][2])- (val[1][2])*(val[2][0])) + (val[0][2])*((val[1][0])*(val[2][1])- (val[1][1])*(val[2][0]));
+}
+
 void Matrix::alloc()
 {
     val = new double*[rows_];
@@ -182,6 +243,18 @@ Matrix operator-(const Matrix& P, const Matrix& Q)
     Matrix TMP(P);
     return (TMP -= Q);
 }
+
+// element selection matrix Eij of dim size
+Matrix elemSelec(int size, int i, int j) 
+{
+    if ((i > size) || (j > size)){
+        cout << "!! Out of bounds for element selection matrix " << endl;
+    }
+    Matrix TMP(size, size);
+    TMP.val[i-1][j-1] = 1;
+    return TMP;
+}
+
 
 Matrix identity(int size)
 {

@@ -29,6 +29,13 @@ class Matrix {
         
         Matrix transpose();
         Matrix fillSym();
+        Matrix changeAllInRow(int i, double a);
+        Matrix changeAllInCol(int j, double a);
+        Matrix gaussianElim();
+        Matrix gaussianSol();
+
+
+        double getDet3();
         void alloc();
         
 
@@ -50,6 +57,7 @@ bool checkCompatible(const Matrix&, const Matrix&); // check if compatible for m
 bool checkSameDim(const Matrix&, const Matrix&); // check if both matrices have exactly same dimensions
 
 Matrix identity(int size);
+Matrix elemSelec(int size, int i, int j); // element selection matrix Eij of dim size
 Matrix colVect(int size, int i); // create col vect with 1 at the ith location. Check 0 <= i < size
 Matrix rowVect(int size, int j); // create col vect with 1 at the ith location. Check 0 <= i < size
 Matrix joinLR(const Matrix&, const Matrix&);
