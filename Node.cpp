@@ -8,6 +8,6 @@ Node::Node(Matrix& position, int elem_index){
 
 
 ostream& operator<<(ostream& os, const Node& N) {
-	os << "-----" << N.position_ << "-----\n" << endl;
+	os << "[" << N.position_ << "]" << endl;
 	return os;
 }

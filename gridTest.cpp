@@ -8,6 +8,7 @@
 #include <iostream>	// pour pouvoir utiliser des objets ostreram
 #include <vector>
 #include <array>
+#include <math.h>
 
 using namespace std;
 
@@ -33,61 +34,185 @@ int main( int argc, char * argv[] ) {
 	vector<Node> myNodes;
 
 	// create an element of index 5
-	Elem myElem(5); 
+	//Elem myElem(5); 
     //vector<int*> NODES;
-    int N = 10;
-    for (int i = 0; i < 5; i++){
-        for (int j = 0; j < 5; j++){
+
+
+	vector<Elem> elements_grid_list;
+	// grid size
+    int N = 2; 
+    for (int i = 0; i < N; i++){
+        for (int j = 0; j < N; j++){
 			// Going through a cubic element
             cout << "i, j = " << i << ", " << j << endl;
-            int elem_index = i*5 + (j+1);
-            cout << "Elem_index = "<< elem_index << endl;
+            int elem_index = i*N + (j+1);
+			cout << "*******************************" << endl;
+
+            cout << "*** Elem_index = "<< elem_index << " *** " <<  endl;
+			cout << "*******************************" << endl;
 			// this displays the left side of cubic element on grid. We should create 6 tetrahedral elements each 
 			// containing respective nodes. 
 
-			/* For each cubic element, we need to create 8 nodes. node1 will be the left bottom, z= 0 */
-            //initialise a position for this node: from left bottom (x,y) , ACW, then z = 1 
-			Matrix node1_ = rowVect(3,0); node1_.val[0][0] = j; node1_.val[0][1] = i; node1_.val[0][2] = 0; 
-			Matrix node2_ = rowVect(3,0); node2_.val[0][0] = j+1; node2_.val[0][1] = i; node2_.val[0][2] = 0; 			
-			Matrix node3_ = rowVect(3,0); node3_.val[0][0] = j+1; node3_.val[0][1] = i+1; node3_.val[0][2] = 0; 
-			Matrix node4_ = rowVect(3,0); node4_.val[0][0] = j; node4_.val[0][1] = i+1; node4_.val[0][2] = 0; 			
-			Matrix node5_ = rowVect(3,0); node5_.val[0][0] = j; node5_.val[0][1] = i; node5_.val[0][2] = 1; 
-			Matrix node6_ = rowVect(3,0); node6_.val[0][0] = j+1; node6_.val[0][1] = i; node6_.val[0][2] = 1; 			
-			Matrix node7_ = rowVect(3,0); node7_.val[0][0] = j+1; node7_.val[0][1] = i+1; node7_.val[0][2] = 1; 
-			Matrix node8_ = rowVect(3,0); node8_.val[0][0] = j; node8_.val[0][1] = i+1; node8_.val[0][2] = 1; 
 
-			Node node1(node1_, elem_index);
-			Node node2(node2_, elem_index);
-			Node node3(node3_, elem_index);
-			Node node4(node4_, elem_index);
-			Node node5(node5_, elem_index);
-			Node node6(node6_, elem_index);
-			Node node7(node7_, elem_index);
-			Node node8(node8_, elem_index);
+			
+			// =================================================================================
+			/* start of brute force method. For each cubic element, we need to create 8 nodes. 
+			node1 will be the left bottom, z= 0            */
+			// =================================================================================
 
-			// make tetrahedral elements with these nodes
-			//Elem elem1(); 
+
+            // //initialise a position for this node: from left bottom (x,y) , ACW, then z = 1 
+			// Matrix node1_ = rowVect(3,0); node1_.val[0][0] = j; node1_.val[0][1] = i; node1_.val[0][2] = 0; 
+			// Matrix node2_ = rowVect(3,0); node2_.val[0][0] = j+1; node2_.val[0][1] = i; node2_.val[0][2] = 0; 			
+			// Matrix node3_ = rowVect(3,0); node3_.val[0][0] = j+1; node3_.val[0][1] = i+1; node3_.val[0][2] = 0; 
+			// Matrix node4_ = rowVect(3,0); node4_.val[0][0] = j; node4_.val[0][1] = i+1; node4_.val[0][2] = 0; 			
+			// Matrix node5_ = rowVect(3,0); node5_.val[0][0] = j; node5_.val[0][1] = i; node5_.val[0][2] = 1; 
+			// Matrix node6_ = rowVect(3,0); node6_.val[0][0] = j+1; node6_.val[0][1] = i; node6_.val[0][2] = 1; 			
+			// Matrix node7_ = rowVect(3,0); node7_.val[0][0] = j+1; node7_.val[0][1] = i+1; node7_.val[0][2] = 1; 
+			// Matrix node8_ = rowVect(3,0); node8_.val[0][0] = j; node8_.val[0][1] = i+1; node8_.val[0][2] = 1; 
+
+			// // create 8 nodes
+			// Node node1(node1_, elem_index);
+			// Node node2(node2_, elem_index);
+			// Node node3(node3_, elem_index);
+			// Node node4(node4_, elem_index);
+			// Node node5(node5_, elem_index);
+			// Node node6(node6_, elem_index);
+			// Node node7(node7_, elem_index);
+			// Node node8(node8_, elem_index);
+
+			// =================================================================================
+			// end of brute force method 
+			// =================================================================================
+
+
+
+
+			vector<Elem> elements_cube_list;
+			vector<Node> nodes_cube_list;
+
+			// create nodes and simultaneously push them into the elements 
+			int modo = 1;
+			int i_loc = i-1; int j_loc = j; int z_loc = 0;
+
+			// for each node in cubic element
+			
+			for(int k = 0; k<8; k++){
+
+				// test 
+				// cout << "k%4: " << k%4 << endl;
+				// cout << "k/4: " << k/4 << endl;
+				z_loc = k/4; 
+				cout << "=======" << endl;
+
+				modo += k%2 ;
+				j_loc += pow(-1, modo)*(k%2);
+				i_loc += pow(-1, modo)*((k-1)%2);
+				cout << "Node "<< k +1 << ": " << j_loc << ", " <<  i_loc << ", "  << z_loc << endl;
+				//cout << "Node "<< k +1<<  "[modo, x, y, z]: "<<modo << ", " << j_loc << ", " <<  i_loc << ", "  << z_loc << endl;
+				Matrix pos_loc = rowVect(3,0); pos_loc.val[0][0] = j_loc; pos_loc.val[0][1] = i_loc; pos_loc.val[0][2] = z_loc;
+				
+				Node node_loc(pos_loc, elem_index);
+				nodes_cube_list.push_back(node_loc);
+
+			}
+			cout << "=======" << endl;
+			// create 6 local elements and stuff them into list 
+			for(int l = 0; l<6 ; l++){
+				Elem elem_loc((elem_index-1)*6 + l);
+				// every tetrahedral element has node 1 in it
+				elem_loc.elemNodes.push_back(nodes_cube_list[0]);
+				if (l == 0){
+					elem_loc.elemNodes.push_back(nodes_cube_list[1]);
+					elem_loc.elemNodes.push_back(nodes_cube_list[2]);
+				}
+				if (l == 1){
+					elem_loc.elemNodes.push_back(nodes_cube_list[5]);
+					elem_loc.elemNodes.push_back(nodes_cube_list[1]);
+				}
+				if (l == 2){
+					elem_loc.elemNodes.push_back(nodes_cube_list[4]);
+					elem_loc.elemNodes.push_back(nodes_cube_list[5]);
+				}
+				if (l == 3){
+					elem_loc.elemNodes.push_back(nodes_cube_list[7]);
+					elem_loc.elemNodes.push_back(nodes_cube_list[4]);
+				}
+				if (l == 4){
+					elem_loc.elemNodes.push_back(nodes_cube_list[3]);
+					elem_loc.elemNodes.push_back(nodes_cube_list[7]);
+				}
+				if (l == 5){
+					elem_loc.elemNodes.push_back(nodes_cube_list[2]);
+					elem_loc.elemNodes.push_back(nodes_cube_list[3]);
+				}
+				elem_loc.elemNodes.push_back(nodes_cube_list[6]);
+
+				// put the local element into the elements cube list and element grid list. 
+				// element cube list is only for when in this loop going through each cube
+				elements_cube_list.push_back(elem_loc); 
+				elements_grid_list.push_back(elem_loc); 
+
+			}
+
+			// check process for a single cubic element (created 8 nodes and 6 elements)
+			vector<Elem>::iterator itn = elements_cube_list.begin();
+			for (; itn != elements_cube_list.end(); itn++)
+			{
+				cout << "Run through element in a cube"  << "..." <<endl;
+				//cout << "\t" << endl;
+				(*itn).PrintNodes();
+				//cout << *itn << endl;
+			}
 
 
 
 			// testing for just creating a node at left bottom for each cubic element, z = 0
-			Matrix position = rowVect(3,0);
-			position.val[0][0] = j; position.val[0][1] = i; position.val[0][2] = 0; 
-			Node node(position, elem_index);
+			// Matrix position = rowVect(3,0);
+			// position.val[0][0] = j; position.val[0][1] = i; position.val[0][2] = 0; 
+			// Node node(position, elem_index);
 
-            //node[0] = j; node[1] = i; node[2] = 0;
             //myNodes.push_back(node);
 
-			// PROBLEM WITH THIS LINE 
-			myElem.elemNodes.push_back(node);
+			//  is ok but mehhh
+			// myElem.elemNodes.push_back(node);
 
 
         }
     }
+	vector<Elem>::iterator itn = elements_cube_list.begin();
+	for (; itn != elements_cube_list.end(); itn++)
+	{
+		cout << "Run through element in a cube"  << "..." <<endl;
+		//cout << "\t" << endl;
+		(*itn).PrintNodes();
+		//cout << *itn << endl;
+	}
+	//  mehhh
+	// myElem.PrintNodes();
 
-	myElem.PrintNodes();
 
-	// print the nodes from the manual vector of nodes. No problemo
+
+
+	// test the generation of (j, j+1, j+1, j) X (i, i , i +1, i+1) 
+	// ============================================================
+
+	// int j = 0; int modo = 1;
+	// int i = -1;
+	// // create nodes and simultaneously push them into the elements 
+	// for(int k = 0; k<8; k++){
+	// 	//Matrix position =
+	// 	modo += k%2 ;
+	// 	j += pow(-1, modo)*(k%2);
+	// 	i += pow(-1, modo)*((k-1)%2);
+	// 	cout << modo << ", " << j << ", " <<  i << endl;
+	// }
+	// ============================================================
+
+
+	/* print the nodes from the manual vector of nodes. No problemo */
+	// ============================================================
+
 	// vector<Node>::iterator itn = myNodes.begin();
 	// for (; itn != myNodes.end(); itn++)
 	// {
@@ -101,7 +226,8 @@ int main( int argc, char * argv[] ) {
     //     cout << "\t" << *it->0 << ", " <<  *it->1 << ", " << *it->2;
     //     cout << "}; \n";
     // }
-    
+    // ============================================================
+
 
     
 	// Matrix Ke_global;

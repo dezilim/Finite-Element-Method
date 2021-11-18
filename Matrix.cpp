@@ -180,12 +180,12 @@ void Matrix::alloc()
 // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 //-------------------------------------------------------------
 ostream& operator<<(ostream& os, const Matrix& M) {
-	os << "\n";
+	//os << "\n";
 	for(int i=0; i<M.rows_; i++){
         for(int j=0; j<M.cols_; j++){
             os << M.val[i][j] << " ";     
         }
-        os << "\n" ;
+        //os << "\n" ;
     } 
 	return os;
 }
