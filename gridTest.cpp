@@ -180,8 +180,8 @@ int main( int argc, char * argv[] ) {
 
         }
     }
-	vector<Elem>::iterator itn = elements_cube_list.begin();
-	for (; itn != elements_cube_list.end(); itn++)
+	vector<Elem>::iterator itn = elements_grid_list.begin();
+	for (; itn != elements_grid_list.end(); itn++)
 	{
 		cout << "Run through element in a cube"  << "..." <<endl;
 		//cout << "\t" << endl;
