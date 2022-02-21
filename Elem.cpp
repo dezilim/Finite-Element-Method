@@ -9,6 +9,8 @@ Elem::Elem(int elem_index){
     //node = NULL;
     this->elem_index_ = elem_index;
 	//node = NULL;
+	// std vector does not need to be initialised.
+	//elemNodes.resize(0);
 	//elemNodes.resize(0);
 
 }
@@ -17,7 +19,7 @@ void Elem::PrintNodes(){
 	for (; itn != elemNodes.end(); itn++)
 	{
 		//cout << "Elem: printing nodes"  << "...\n" ;
-		cout << *itn << endl;
+		cout << "\t" << *itn << endl;
 	}
 
 }

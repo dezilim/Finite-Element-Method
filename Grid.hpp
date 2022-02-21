@@ -1,27 +1,27 @@
-#ifndef Elem_hpp
-#define Elem_hpp
+#ifndef Grid_hpp
+#define Grid_hpp
 
 #include <iostream>	// pour pouvoir utiliser des objets ostreram
 #include <vector>
 #include "Matrix.hpp"
 #include "Node.hpp"
+#include "Elem.hpp"
 using namespace std;
-using Eigen::MatrixXd;
 
-class Elem{
+
+class Grid{
     public: 
         // want to be able to access nodes in an elemenet in no particular order...
-        vector<Node> elemNodes;
-        int elem_index_;
-        MatrixXd Ke_global;
-        VectorXd Fe_global;
+        vector<Elem> gridElems; 
+        vector<Node> gridNodes;
+        int gridSize;
         // pointer of nodes in this element. 
         //Node* node;
 
         //simple constructor 
-        Elem(int elem_index);
+        Grid(int Size);
 
-        void PrintNodes();
+        //void PrintNodes();
         
 
 };

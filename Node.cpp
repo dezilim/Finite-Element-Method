@@ -1,6 +1,6 @@
 #include "Node.hpp"
 
-Node::Node(Matrix& position, int elem_index){
+Node::Node(Vector3d& position, int elem_index){
     this->position_ = position;
     this->elem_index_ = elem_index;
 
@@ -8,6 +8,7 @@ Node::Node(Matrix& position, int elem_index){
 
 
 ostream& operator<<(ostream& os, const Node& N) {
-	os << "[" << N.position_ << "]" << endl;
+	//os << "--node-position--\n" << N.position_ << "\n" << endl;
+	os << "--node-position--\n" << N.position_ << endl;
 	return os;
 }
