@@ -20,6 +20,7 @@
 #include <array>
 #include <math.h>
 #include <string>
+#include <chrono>
 
 
 using Eigen::MatrixXd;
@@ -46,11 +47,13 @@ int main( int argc, char * argv[] ) {
 	F_Txt.open("F.txt");
 
 	// ------------------------------ GENERATE GRID AND CHECK ------------------------------ 
+	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+	/* code you want to measure */
 
 
 	// NOTE: Change the number in makeGrid and also in the nb_nodes 
-	Grid mainGrid = makeGrid(3);
-	int N = 3;
+	Grid mainGrid = makeGrid(5);
+	int N = 5;
 	int nb_nodes = pow((N+1),3);
 	int nb_nodes_bound = pow((N+1),2);
 
@@ -73,20 +76,20 @@ int main( int argc, char * argv[] ) {
 	}
 
 	// Run through global element list to save which nodes are in each elem
-	vector<Elem>::iterator itglobal_elem = mainGrid.gridElems.begin();
-	//cout << (*itglobal) << endl;
-	for (; itglobal_elem != mainGrid.gridElems.end();itglobal_elem++)
-	{	
-		vector<Node>::iterator nodeInElem = (*itglobal_elem).elemNodes.begin();
-		for (; nodeInElem != (*itglobal_elem).elemNodes.end();nodeInElem++){
+	// vector<Elem>::iterator itglobal_elem = mainGrid.gridElems.begin();
+	// //cout << (*itglobal) << endl;
+	// for (; itglobal_elem != mainGrid.gridElems.end();itglobal_elem++)
+	// {	
+	// 	vector<Node>::iterator nodeInElem = (*itglobal_elem).elemNodes.begin();
+	// 	for (; nodeInElem != (*itglobal_elem).elemNodes.end();nodeInElem++){
 
-			elemListTxt << (*nodeInElem);
-			// elemListTxt << "\n";
-		}
-		elemListTxt << "NEXT\n";
-	}
+	// 		elemListTxt << (*nodeInElem);
+	// 		// elemListTxt << "\n";
+	// 	}
+	// 	elemListTxt << "NEXT\n";
+	// }
 
-
+	int masterToBeRemoved [] = {1,2};
 
 
 
@@ -295,7 +298,7 @@ int main( int argc, char * argv[] ) {
 	cout << "Ke :\n" << Ke << endl; 
 
 	Vector3d Fe1 = Vector3d::Zero();
-	Fe1(2) = -9.81/10;
+	Fe1(2) = -9.81/5;
 	//cout << "Fe1 :\n" << Fe1 << endl;
 	VectorXd Fe = VectorXd::Zero(12);
 	Fe << Fe1, Fe1, Fe1, Fe1;
@@ -351,9 +354,9 @@ int main( int argc, char * argv[] ) {
 		// cout << "De:\n" << D_e << "\n" << endl;		
 		//cout << "D:\n" << D << "\n" << endl;		
 
-		Vector3d diffX1X0 = X1-X0;
-		Vector3d diffX2X0 = X2-X0;
-		Vector3d diffX3X0 = X3-X0;	
+		// Vector3d diffX1X0 = X1-X0;
+		// Vector3d diffX2X0 = X2-X0;
+		// Vector3d diffX3X0 = X3-X0;	
 
 
 		// cout << "X1-X0:\n" << diffX1X0 << endl;
@@ -424,8 +427,8 @@ int main( int argc, char * argv[] ) {
 		// ================================================================
 
 
-		MatrixXd Je(3,3); 
-		Je << diffX1X0, diffX2X0, diffX3X0;
+		// MatrixXd Je(3,3); 
+		// Je << diffX1X0, diffX2X0, diffX3X0;
 
 		// MatrixXd Zero3 = MatrixXd::Zero(3,3); Vector3d ZeroCol3 = Vector3d::Zero(3);
 		// MatrixXd A(3,3);
@@ -506,13 +509,14 @@ int main( int argc, char * argv[] ) {
 		(*itn).Ke_global = Ke_globalBB;
 		(*itn).Fe_global = Fe_global;
 
-		cout << " ------ Summary for element ------ "<< elem_index + 1 << endl;
+		// cout << " ------ Summary for element ------ "<< elem_index + 1 << endl;
 		// cout << "de = T De:\n" << T*D_e << "\n" << endl;		
 		// cout << "Jacobian: \n" << Je << endl;
 		// cout << "Det (Je) : \n" << Je.determinant() << endl;
 		// cout << "Ke global by A: \n" << Ke_global << endl;
 
-		cout << "Ke global BB : \n" << Ke_globalBB << endl;
+		// cout << "Ke global BB : \n" << Ke_globalBB << endl;
+
 		// cout << "Fe : \n" << Fe_global << endl;
 		// cout << "Ke global INV: \n" << Ke_global_inv << endl;
 		// cout << "Fe INV: \n" << Fe_global_inv << endl;
@@ -642,7 +646,7 @@ int main( int argc, char * argv[] ) {
 	}
 
 	
-	cout << "============= Summary =============" << endl; 
+	// cout << "============= Summary =============" << endl; 
 	// cout << "Number of nodes: " << nb_nodes << endl; 
 	// cout << "Global stiffness matrix: \n" << K << endl;
 	// cout << "Global force vector: \n" << F << endl;
@@ -678,7 +682,14 @@ int main( int argc, char * argv[] ) {
 		}
 
 	}
-	cout << "============= Summary After Dirichlet conditions =============" << endl; 
+
+	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+	cout << "Time difference (sec) = " <<  (std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count()) /1000000.0  << endl;
+	// cout << "Time difference = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "[µs]" << endl;
+	// cout << "Time difference = " << std::chrono::duration_cast<std::chrono::nanoseconds> (end - begin).count() << "[ns]" << endl;	// time taken to generate and store the mesh and perform the simulation
+	// cout << "============= Summary After Dirichlet conditions =============" << endl; 
+
+
 	// cout << "Number of nodes: " << nb_nodes << endl; 
 	// cout << "Global stiffness matrix: \n" << K << endl;
 	// cout << "Global force vector: \n" << F << endl;
