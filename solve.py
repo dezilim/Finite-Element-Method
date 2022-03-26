@@ -141,7 +141,7 @@ for i in np.arange(len(FF_iters_list)):
     KK = KK_iters_list[i]
     FF = FF_iters_list[i]
     # elements = elem_iters_list[i]
-    fileSaveName = "standAloneVerticalHole" + str(N) + "-" + str(i) +".png"
+    fileSaveName = "standAloneHole" + str(N) + "-" + str(i) +".png"
     
     UU =  [1] * 3*nb_nodes
     count = 0
@@ -240,16 +240,22 @@ for i in np.arange(len(FF_iters_list)):
 
 
     #ax.contour(X,Y,Z, color='black')
-    ax.view_init(20,80)
-    # ax.view_init(80,0)
+    # ax.view_init(45,90)
+    # ax.view_init(45,45)
+    
+    
+    # ax.view_init(40,0)
 
     # top view ----------
-    # ax.view_init(90,45)
+    ax.view_init(80,0)
+    # ax.view_init(20,70)
 
     ax.set_xlabel('$X$')
     ax.set_ylabel('$Y$')
     ax.set_zlabel('$Z$')
     ax.set_zlim([-1,N+1])
+    ax.set_ylim([-1,N+1])
+    ax.set_xlim([-1,N+1])
     # plt.savefig('result.png')
     print("gonna save the stupid file\n")
     plt.savefig(fileSaveName)
